@@ -132,7 +132,7 @@ int main(char [][] args) {
         case "--help": return help();
         case "--cflags": return cflags();
         case "--dubpath": return dubpath();
-        case "--exec": return exec(args[i + 1 .. $]);
+        case "--exec": return exec(args[i + 2 .. $]);
         case "--maindir": option_maindir = true; break;
         default:
           stderr.writeln("Invalid argument: " ~ cast(string)(a));
