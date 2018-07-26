@@ -1,0 +1,9 @@
+{
+	"name": "dub-config",
+	"authors": [
+		"Kimon Kontosis"
+	],
+	"description": "D language helper build utility that extracts library include paths from the dub package manager configuration",
+	"copyright": "Copyright © 2018, Kimon Kontosis",
+	"license": "MIT"
+}
