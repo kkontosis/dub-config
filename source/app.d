@@ -61,7 +61,7 @@ int cflags() {
 int help() {
   writeln("Extracts the D library include paths from the dub package manager configuration file");
   writeln("commands:");
-  writeln("\t--help\tDisplay help");
+  writeln("\t\t--help\tDisplay help");
   writeln("\t--cflags\tRetrieve a list of the include paths in the form: -I=path ...");
   writeln("\t--dubpath\tGet the dub configuration file path from a project subdirectory");
   writeln("\t--exec arg..\tRun the command specified by the remaining arguments while replacing:");
