@@ -12,7 +12,8 @@ import std.file;
 import std.traits;
 import std.path;
 
-int cflags() {
+string[] getcflags() {
+  string[] r;
   string d = getdubpath();
 
   auto dub = execute(
@@ -24,23 +25,34 @@ int cflags() {
   );
 
   if (dub.status != 0) {
-    stderr.writefln("Dub describe failed");
-    return 1;
+    throw new Exception("Dub describe failed");
   }
   auto describe = dub.output;
   auto j = parseJSON(describe);
-  bool first = true;
   foreach (p; j["packages"].array) {
     foreach (pa; p["importPaths"].array) {
       auto path = p["path"].str ~ pa.str;
-      if (first) {
-        first = false;
-      } else {
-        write(" ");
-      }
-      std.stdio.write("-I=", path);
+      r ~= "-I=" ~ path;
     }
   }
+  return r;
+}
+
+int cflags() {
+  string r;
+  bool first = true;
+
+  auto all = getcflags();
+  foreach (f; all) {
+    if (first) {
+      first = false;
+    } else {
+      r ~= " ";
+    }
+    r ~= f;
+  }
+
+  writeln(r);
   return 0;
 }
 
