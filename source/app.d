@@ -12,6 +12,8 @@ import std.file;
 import std.traits;
 import std.path;
 
+bool option_maindir = false;
+
 string[] getcflags() {
   string[] r;
   string d = getdubpath();
@@ -58,10 +60,15 @@ int cflags() {
 
 int help() {
   writeln("Extracts the D library include paths from the dub package manager configuration file");
-  writeln("options:");
+  writeln("commands:");
   writeln("\t--help\tDisplay help");
   writeln("\t--cflags\tRetrieve a list of the include paths in the form: -I=path ...");
-  writeln("\t--dubpath\tGet the dub path from a project subdirectory");
+  writeln("\t--dubpath\tGet the dub configuration file path from a project subdirectory");
+  writeln("\t--exec arg..\tRun the command specified by the remaining arguments while replacing:");
+  writeln("\t\t\"DUB_CONFIG_DUBPATH\"\twith the dub configuration file path ");
+  writeln("\t\t\"DUB_CONFIG_CFLAGS\"\twith the cflags arguments list");
+  writeln("options:");
+  writeln("\t--maindir\tChanges the current directory to dubpath before running any external commands");
 
   return 0;
 }
@@ -98,12 +105,34 @@ int dubpath() {
   return 0;
 }
 
+int exec(char [][] args) {
+  string [] r;
+  foreach(i, a; args) {
+    switch(a) {
+      case "DUB_CONFIG_CFLAGS":
+        r ~= getcflags();
+        break;
+      case "DUB_CONFIG_DUBPATH":
+        r ~= getdubpath();
+        break;
+      default:
+        r ~= cast(string)(a);
+    }
+  }
+  if (option_maindir) std.file.chdir(getdubpath());
+  wait(spawnProcess(r));
+
+  return 0;
+}
+
 int main(char [][] args) {
   try {
-    foreach (a; args) {
+    foreach (i, a; args) {
       if (a == "--help") return help();
       if (a == "--cflags") return cflags();
       if (a == "--dubpath") return dubpath();
+      if (a == "--exec") return exec(args[i + 1 .. $]);
+      if (a == "--maindir") option_maindir = true;
     }
 
     return help();
