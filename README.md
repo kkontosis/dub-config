@@ -27,7 +27,7 @@ with the following content:
 }
 ```
 
-running `dub-config --cflags` would yield the following result:
+Running `dub-config --cflags` would yield the following result:
 
 ```bash
 $ dub-config --cflags
